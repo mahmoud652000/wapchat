@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>تسجيل الدخول | Wap Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- خط Google -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+        background: linear-gradient(to right, #1f2937, #4b5563);
+      }
+
+      .form-container {
+        animation: fadeInUp 1s ease-in-out;
+      }
+
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="flex items-center justify-center min-h-screen text-white">
+    <div
+      class="form-container bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md"
+    >
+      <h1 class="text-3xl font-bold text-center mb-4 text-indigo-400">
+        Wap Chat
+      </h1>
+      <h2 class="text-xl font-semibold mb-6 text-center">تسجيل الدخول</h2>
+
+      <form id="loginForm" class="space-y-4">
+        <input
+          type="email"
+          id="email"
+          placeholder="البريد الإلكتروني"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <input
+          type="password"
+          id="password"
+          placeholder="كلمة المرور"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 transition duration-200 py-2 rounded font-bold"
+        >
+          دخول
+        </button>
+
+        <div id="message" class="text-center mt-3 text-sm"></div>
+      </form>
+
+      <p class="text-center text-sm mt-4">
+        ليس لديك حساب؟
+        <a href="register.html" class="text-indigo-400 hover:underline"
+          >إنشاء حساب</a
+        >
+      </p>
+    </div>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      const message = document.getElementById("message");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const res = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("name", data.name);
+            message.textContent = "✅ تم تسجيل الدخول بنجاح";
+            message.style.color = "lightgreen";
+
+            setTimeout(() => {
+              window.location.href = "chat.html";
+            }, 1000);
+          } else {
+            message.textContent = data.message;
+            message.style.color = "red";
+          }
+        } catch (err) {
+          message.textContent = "❌ حدث خطأ في الاتصال بالخادم";
+          message.style.color = "red";
+        }
+      });
+    </script>
+  </body>
+</html>

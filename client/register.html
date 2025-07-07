@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>إنشاء حساب Wap Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- خط Google -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: Cairo, sans-serif;
+        background: linear-gradient(to right, #1f2937, #4b5563);
+      }
+
+      .form-container {
+        animation: fadeInUp 1s ease-in-out;
+      }
+
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="flex items-center justify-center min-h-screen text-white">
+    <div
+      class="form-container bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md"
+    >
+      <h1 class="text-3xl font-bold text-center mb-4 text-indigo-400">
+        Wap Chat
+      </h1>
+      <h2 class="text-xl font-semibold mb-6 text-center">إنشاء حساب جديد</h2>
+
+      <form id="registerForm" class="space-y-4">
+        <input
+          type="text"
+          id="name"
+          placeholder="الاسم"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <input
+          type="email"
+          id="email"
+          placeholder="البريد الإلكتروني"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <input
+          type="password"
+          id="password"
+          placeholder="كلمة المرور"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+
+        <!-- صورة البروفايل -->
+        <input
+          type="file"
+          id="profilePic"
+          accept="image/*"
+          class="w-full px-4 py-2 bg-gray-700 rounded focus:outline-none"
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 transition duration-200 py-2 rounded font-bold"
+        >
+          تسجيل
+        </button>
+
+        <div id="message" class="text-center mt-3 text-sm"></div>
+      </form>
+
+      <p class="text-center text-sm mt-4">
+        لديك حساب؟
+        <a href="login.html" class="text-indigo-400 hover:underline"
+          >تسجيل الدخول</a
+        >
+      </p>
+    </div>
+
+    <script>
+      const form = document.getElementById("registerForm");
+      const message = document.getElementById("message");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // ملاحظة: لم يتم حفظ الصورة في هذا المثال، لكن يمكنك تعديل الخادم لاستقبالها
+        const res = await fetch("apiregister", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          message.textContent = data.message;
+          message.style.color = "lightgreen";
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+        } else {
+          message.textContent = data.message;
+          message.style.color = "red";
+        }
+      });
+    </script>
+  </body>
+</html>
